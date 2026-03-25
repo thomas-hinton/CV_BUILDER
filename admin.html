@@ -1,0 +1,68 @@
+<!DOCTYPE html lang=fr>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Builder</title>
+</head>
+
+<body>
+
+    <h1>CV Builder</h1>
+    <p>Bienvenue sur le CV Builder ! Créez votre CV en quelques étapes simples.</p>
+    
+    <div id="personal-info">
+        <h2>Informations personnelles</h2>
+
+        <label for="name">Nom :</label>
+        <input type="text" id="name" name="name"><br><br>
+
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email"><br><br>
+
+        <label for="phone">Téléphone :</label>
+        <input type="tel" id="phone" name="phone"><br><br>
+    </div>
+
+    <div id="education">
+        <h2>Formation</h2>
+
+        <!-- Liste des formations ajoutées dynamiquement-->
+        <div id="formations-list"></div> 
+
+        <label for="degree">Diplôme :</label>
+        <input type="text" id="degree" name="degree"><br><br>
+
+        <label for="institution">Établissement :</label>
+        <input type="text" id="institution" name="institution"><br><br>
+
+        <label for="year">Année d'obtention :</label>
+        <input type="number" id="year" name="year"><br><br>
+
+        <button id="add-education">Ajouter une formation</button>
+    </div>
+
+    <div id="user-experiences">
+        <h2>Expériences professionnelles</h2>
+
+        <!-- Liste des formations ajoutées dynamiquement-->
+        <div id="experiences-list"></div>
+        <label for="job-title">Intitulé du poste :</label>
+        <input type="text" id="job-title" name="job-title"><br><br>
+
+        <label for="company">Entreprise :</label>
+        <input type="text" id="company" name="company"><br><br>
+
+        <label for="duration">Durée :</label>
+        <input type="text" id="duration" name="duration"><br><br>
+
+        <button id="add-experience">Ajouter une expérience</button>
+    </div>
+
+
+
+</body>
+
+
+</html>
