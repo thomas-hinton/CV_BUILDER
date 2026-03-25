@@ -2,12 +2,15 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+app.mount("/css", StaticFiles(directory="css"), name="css")
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
-coffees = []
 
 BASE_DIR = Path(__file__).resolve().parent
+
 
 @app.get("/")
 def home():
