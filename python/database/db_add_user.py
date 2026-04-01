@@ -1,0 +1,44 @@
+import sqlite3
+import uuid
+
+DB_PATH = "data/db.db"
+
+def addUserIntoDatabaseByName(name: str):
+    print(f"Adding user {name} into database")
+
+    # Recleaning for security
+    clean_name = name.strip()
+    if not clean_name:
+        return {"status": "error", "message": "Nom vide"}
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    try:
+        # Checking if this name as already been saved into DB and do nothing if so
+        cursor.execute("SELECT 1 FROM user_page WHERE nom = ? LIMIT 1", (clean_name,))
+        exists = cursor.fetchone() is not None
+        if exists:
+            return {"status": "exists", "message": "Nom déjà présent, aucune insertion"}
+            
+        # Else insert a new line with only name
+        new_id = str(uuid.uuid4())
+        cursor.execute(
+            """
+            INSERT INTO user_page (id_user_page, nom, prénom, tel, email, adresse, id_user_mail)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (new_id, clean_name, "", "", "", "", "")
+        )
+        conn.commit()
+        return {"status": "created", "message": "Utilisateur créé"}
+    finally:
+        conn.close()
+
+
+
+
+def addUserIntoDatabaseByFirstname(firstname: str):
+    print(f"Adding user {firstname} into database")
+
+def addUserIntoDatabaseByEmail(email: str):
+    print(f"Adding user {email} into database")
