@@ -30,4 +30,9 @@ def modify_name(name: str):
     print(f"Modifying name to {name}")
     return(addUserIntoDatabaseByName(name))
 
+@app.get("/get_user_by_name")
+def get_user_by_name(name: str):
+    print(f"Getting user by name {name}")
+    return(getUserFromDatabaseByName(name))
+
     

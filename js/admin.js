@@ -9,6 +9,42 @@ function isValidString(str){
     return /^[A-Za-zÀ-ÖØ-öø-ÿ-]+$/.test(clean);
 }
 
+async function getDataBaseInfosFromLocalStorage(name) {
+    /*
+    Getting all database info from local storage data
+    Only name for now but will be extended to other data in the future
+    */
+
+    if (name) {
+        
+        if(isValidString(name)){
+
+            //Call to endpoint
+            try {
+                const response = await fetch(
+                `http://127.0.0.1:8000/get_user_by_name?name=${encodeURIComponent(name)}`,
+                { method: "POST" }
+                );
+
+                if (!response.ok) {
+                throw new Error(`Erreur HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data);
+
+                //At this point we only do it for name in dev phase
+                return data;
+
+            } catch (err) {
+                console.error(err);
+            }    
+        }
+    } else {
+        alert("Le nom n'est pas valide !");
+    }
+}
+
 async function modifyName() {
     /*
     Modify and store username in DB
@@ -47,8 +83,35 @@ async function modifyName() {
     }
 }
 
+function getInputFilledWithLocalStorage(){
+    /*
+    Gets infos from DB by calling endpoints related to data stored in localStorage
+    */
+
+    const localName = localStorage.getItem("name");
+
+    if(localName){
+
+        // Recleaning it even if it is done already, just in case localStorage is set manually
+        cleanName = localName.trim();
+        if(isValidString(cleanName)){
+            
+            name_to_fill = getDataBaseInfosFromLocalStorage(cleanName)
+            console.log("Name to fill : ", name_to_fill);
+
+        } else {
+            console.warn("Invalid name in localStorage, skipping the filling of the input");
+        }
+
+    }
+
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    // Automatically filling inputs with localStorage data
+    // Not working for instance getInputFilledWithLocalStorage();
 
     const btnModifyName = document.getElementById("modify-name");
     const btnModifySurname = document.getElementById("modify-surname");
