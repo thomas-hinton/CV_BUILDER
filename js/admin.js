@@ -23,7 +23,7 @@ async function getDataBaseInfosFromLocalStorage(name) {
             try {
                 const response = await fetch(
                 `http://127.0.0.1:8000/get_user_by_name?name=${encodeURIComponent(name)}`,
-                { method: "POST" }
+                { method: "GET" }
                 );
 
                 if (!response.ok) {
@@ -76,6 +76,7 @@ async function modifyName() {
 
             } catch (err) {
                 console.error(err);
+                return null;
             }    
         }
     } else {
@@ -83,7 +84,7 @@ async function modifyName() {
     }
 }
 
-function getInputFilledWithLocalStorage(){
+async function getInputFilledWithLocalStorage(){
     /*
     Gets infos from DB by calling endpoints related to data stored in localStorage
     */
@@ -96,8 +97,12 @@ function getInputFilledWithLocalStorage(){
         cleanName = localName.trim();
         if(isValidString(cleanName)){
             
-            name_to_fill = getDataBaseInfosFromLocalStorage(cleanName)
+            name_to_fill = await getDataBaseInfosFromLocalStorage(cleanName)
             console.log("Name to fill : ", name_to_fill);
+
+            if (name_to_fill && name_to_fill.status === "found" && Array.isArray(name_to_fill.data)) {
+                document.getElementById("name").value = name_to_fill.data[1] ?? "";
+            }
 
         } else {
             console.warn("Invalid name in localStorage, skipping the filling of the input");
@@ -111,7 +116,7 @@ function getInputFilledWithLocalStorage(){
 document.addEventListener("DOMContentLoaded", () => {
 
     // Automatically filling inputs with localStorage data
-    // Not working for instance getInputFilledWithLocalStorage();
+    getInputFilledWithLocalStorage();
 
     const btnModifyName = document.getElementById("modify-name");
     const btnModifySurname = document.getElementById("modify-surname");

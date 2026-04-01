@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 # Personal modules
 from python.database.db_add_user import *
+from python.database.db_get_user import *
 
 
 app = FastAPI()
