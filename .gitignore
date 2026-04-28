@@ -1,8 +1,39 @@
-# Byte-compiled / cache
+# Python bytecode / cache
 __pycache__/
 *.py[cod]
 *$py.class
+
 # Virtual environments
 .venv/
 venv/
 env/
+
+# Local environment variables
+.env
+.env.*
+!.env.example
+
+# SQLite databases generated locally
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/*.db-journal
+data/*.db-shm
+data/*.db-wal
+
+# Logs and runtime files
+*.log
+*.pid
+
+# Test / tooling cache
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

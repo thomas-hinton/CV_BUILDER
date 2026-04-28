@@ -1,10 +1,12 @@
-CREATE TABLE user_(
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS user_(
    id_user_mail VARCHAR(50),
    password VARCHAR(50) NOT NULL,
    PRIMARY KEY(id_user_mail)
 );
 
-CREATE TABLE user_page(
+CREATE TABLE IF NOT EXISTS user_page(
    id_user_page VARCHAR(50),
    nom VARCHAR(50) NOT NULL,
    prénom VARCHAR(50) NOT NULL,
@@ -17,7 +19,7 @@ CREATE TABLE user_page(
    FOREIGN KEY(id_user_mail) REFERENCES user_(id_user_mail)
 );
 
-CREATE TABLE formation(
+CREATE TABLE IF NOT EXISTS formation(
    id_formation VARCHAR(50),
    nom_formation VARCHAR(50) NOT NULL,
    date_début DATE NOT NULL,
@@ -30,7 +32,7 @@ CREATE TABLE formation(
    FOREIGN KEY(id_user_page) REFERENCES user_page(id_user_page)
 );
 
-CREATE TABLE experience(
+CREATE TABLE IF NOT EXISTS experience(
    id_experience VARCHAR(50),
    nom_experience VARCHAR(50) NOT NULL,
    date_début DATE NOT NULL,
