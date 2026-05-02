@@ -381,6 +381,55 @@ def delete_experience(user_id: str, experience_id: str) -> dict:
 # Skills CRUD
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Public CV — no auth required
+# ---------------------------------------------------------------------------
+
+def get_public_cv(slug: str) -> dict | None:
+    """
+    Return the full public CV for a given slug, or None if not found/private.
+    Respects show_email and show_phone flags.
+    """
+    conn = get_connection()
+    try:
+        conn.row_factory = lambda c, r: dict(zip([col[0] for col in c.description], r))
+
+        profile = conn.execute(
+            "SELECT * FROM cv_profiles WHERE slug = ? AND is_public = 1", (slug,)
+        ).fetchone()
+        if not profile:
+            return None
+
+        profile_id = profile["id_user_page"]
+
+        # Mask contact info if owner chose to hide it
+        if not profile["show_email"]:
+            profile["email"] = None
+        if not profile["show_phone"]:
+            profile["tel"] = None
+
+        formations = conn.execute(
+            "SELECT * FROM formations WHERE id_user_page = ?", (profile_id,)
+        ).fetchall()
+
+        experiences = conn.execute(
+            "SELECT * FROM experiences WHERE id_user_page = ?", (profile_id,)
+        ).fetchall()
+
+        skills = conn.execute(
+            "SELECT * FROM skills WHERE id_user_page = ?", (profile_id,)
+        ).fetchall()
+
+        return {
+            "profile": profile,
+            "formations": formations,
+            "experiences": experiences,
+            "skills": skills,
+        }
+    finally:
+        conn.close()
+
+
 def create_skill(user_id: str, data: dict) -> dict:
     conn = get_connection()
     try:
