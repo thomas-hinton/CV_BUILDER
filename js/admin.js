@@ -159,7 +159,8 @@ async function saveProfile(e) {
     };
 
     const method = profileExists ? "PATCH" : "POST";
-    const { ok, data } = await api(method, "/profiles/me", body);
+    const path   = profileExists ? "/profiles/me" : "/profiles";
+    const { ok, data } = await api(method, path, body);
     setLoading("btn-save-profile", false);
 
     if (ok) {
