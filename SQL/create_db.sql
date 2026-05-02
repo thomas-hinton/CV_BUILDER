@@ -10,13 +10,17 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS cv_profiles (
    id_user_page VARCHAR(50),
-   nom          VARCHAR(50) NOT NULL,
-   prenom       VARCHAR(50) NOT NULL,
+   nom          VARCHAR(50)  NOT NULL,
+   prenom       VARCHAR(50)  NOT NULL,
    photo_profil TEXT,
    tel          CHAR(10),
-   email        VARCHAR(50),
+   email        VARCHAR(100),
    adresse      TEXT,
-   user_id      VARCHAR(36) NOT NULL,
+   user_id      VARCHAR(36)  NOT NULL UNIQUE,
+   slug         VARCHAR(100) NOT NULL UNIQUE,
+   is_public    INTEGER      NOT NULL DEFAULT 0,
+   show_email   INTEGER      NOT NULL DEFAULT 0,
+   show_phone   INTEGER      NOT NULL DEFAULT 0,
    PRIMARY KEY (id_user_page),
    FOREIGN KEY (user_id) REFERENCES users (id)
 );

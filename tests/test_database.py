@@ -79,8 +79,8 @@ def test_fk_cv_profile_with_valid_user_succeeds():
     )
     conn.execute(
         """
-        INSERT INTO cv_profiles (id_user_page, nom, prenom, user_id)
-        VALUES ('profile-1', 'Dupont', 'Jean', 'uuid-1')
+        INSERT INTO cv_profiles (id_user_page, nom, prenom, user_id, slug)
+        VALUES ('profile-1', 'Dupont', 'Jean', 'uuid-1', 'jean-dupont')
         """
     )
     conn.commit()
