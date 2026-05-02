@@ -4,7 +4,7 @@ from python.database.db_add_user import addUserIntoDatabaseByName
 from python.database.db_get_user import getUserFromDatabaseByName
 from python.schemas.profiles import ModifyNameRequest
 
-router = APIRouter(prefix="/profiles", tags=["profiles"])
+router = APIRouter(tags=["profiles"])
 
 
 # TODO (Phase 2): Replace these temporary endpoints with proper RESTful CRUD.
