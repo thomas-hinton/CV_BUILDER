@@ -37,13 +37,46 @@ function logout() {
 async function api(method, path, body) {
     const opts = { method, headers: authHeaders() };
     if (body !== undefined) opts.body = JSON.stringify(body);
-    const res = await fetch(`${API}${path}`, opts);
+    let res;
+    try {
+        res = await fetch(`${API}${path}`, opts);
+    } catch {
+        return { ok: false, status: 0, data: { detail: "Impossible de joindre le serveur. Vérifie ta connexion." } };
+    }
     if (res.status === 401) {
         logout();
         return { ok: false, status: 401, data: null };
     }
     const data = res.status !== 204 ? await res.json() : null;
     return { ok: res.ok, status: res.status, data };
+}
+
+// ---------------------------------------------------------------------------
+// Error formatting — handles Pydantic validation lists
+// ---------------------------------------------------------------------------
+
+function formatError(detail) {
+    if (!detail) return "Erreur inconnue.";
+    if (typeof detail === "string") return detail;
+    if (Array.isArray(detail)) {
+        // Pydantic v2: [{loc: [...], msg: "...", type: "..."}]
+        return detail.map(e => {
+            const field = e.loc ? e.loc.filter(s => s !== "body").join(" → ") : "";
+            return field ? `${field} : ${e.msg}` : e.msg;
+        }).join("\n");
+    }
+    return JSON.stringify(detail);
+}
+
+// ---------------------------------------------------------------------------
+// Button loading state
+// ---------------------------------------------------------------------------
+
+function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? "Chargement..." : btn.dataset.label;
 }
 
 // ---------------------------------------------------------------------------
@@ -112,6 +145,7 @@ async function loadProfile() {
 
 async function saveProfile(e) {
     e.preventDefault();
+    setLoading("btn-save-profile", true);
 
     const body = {
         nom:        val("f-nom"),
@@ -126,21 +160,20 @@ async function saveProfile(e) {
 
     const method = profileExists ? "PATCH" : "POST";
     const { ok, data } = await api(method, "/profiles/me", body);
+    setLoading("btn-save-profile", false);
 
     if (ok) {
         profileExists = true;
         showMsg("profile-msg", "Profil sauvegardé ✓");
         document.getElementById("profile-slug-info").textContent =
             `URL publique : /cv/${data.slug}`;
-        // Refresh list sections on first creation
         if (method === "POST") {
             await loadFormations();
             await loadExperiences();
             await loadSkills();
         }
     } else {
-        const detail = data?.detail ?? "Erreur inconnue";
-        showMsg("profile-msg", typeof detail === "string" ? detail : JSON.stringify(detail), true);
+        showMsg("profile-msg", formatError(data?.detail), true);
     }
 }
 
@@ -165,6 +198,7 @@ function renderFormationItem(f) {
 
 async function addFormation(e) {
     e.preventDefault();
+    setLoading("btn-add-formation", true);
     const body = {
         nom_formation:          val("fo-nom"),
         organisme_formation:    val("fo-organisme"),
@@ -173,12 +207,13 @@ async function addFormation(e) {
         description_formation:  val("fo-description"),
     };
     const { ok, data } = await api("POST", "/profiles/me/educations", body);
+    setLoading("btn-add-formation", false);
     if (ok) {
         showMsg("formation-msg", "Formation ajoutée ✓");
         e.target.reset();
         await loadFormations();
     } else {
-        showMsg("formation-msg", data?.detail ?? "Erreur", true);
+        showMsg("formation-msg", formatError(data?.detail), true);
     }
 }
 
@@ -203,6 +238,7 @@ function renderExperienceItem(exp) {
 
 async function addExperience(e) {
     e.preventDefault();
+    setLoading("btn-add-experience", true);
     const body = {
         nom_experience:         val("ex-nom"),
         organisme_experience:   val("ex-organisme"),
@@ -212,12 +248,13 @@ async function addExperience(e) {
         lieu_experience:        val("ex-lieu"),
     };
     const { ok, data } = await api("POST", "/profiles/me/experiences", body);
+    setLoading("btn-add-experience", false);
     if (ok) {
         showMsg("experience-msg", "Expérience ajoutée ✓");
         e.target.reset();
         await loadExperiences();
     } else {
-        showMsg("experience-msg", data?.detail ?? "Erreur", true);
+        showMsg("experience-msg", formatError(data?.detail), true);
     }
 }
 
@@ -241,18 +278,20 @@ function renderSkillItem(s) {
 
 async function addSkill(e) {
     e.preventDefault();
+    setLoading("btn-add-skill", true);
     const body = {
         nom_skill:  val("sk-nom"),
         niveau:     val("sk-niveau"),
         categorie:  val("sk-categorie"),
     };
     const { ok, data } = await api("POST", "/profiles/me/skills", body);
+    setLoading("btn-add-skill", false);
     if (ok) {
         showMsg("skill-msg", "Compétence ajoutée ✓");
         e.target.reset();
         await loadSkills();
     } else {
-        showMsg("skill-msg", data?.detail ?? "Erreur", true);
+        showMsg("skill-msg", formatError(data?.detail), true);
     }
 }
 

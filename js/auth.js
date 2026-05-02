@@ -37,12 +37,16 @@ function setLoading(buttonId, loading) {
 // ---------------------------------------------------------------------------
 
 async function register(email, password) {
-    const res = await fetch(`${API}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-    });
-    return { ok: res.ok, status: res.status, data: await res.json() };
+    try {
+        const res = await fetch(`${API}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+        return { ok: res.ok, status: res.status, data: await res.json() };
+    } catch {
+        return { ok: false, status: 0, data: {} };
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -50,12 +54,16 @@ async function register(email, password) {
 // ---------------------------------------------------------------------------
 
 async function login(email, password) {
-    const res = await fetch(`${API}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-    });
-    return { ok: res.ok, status: res.status, data: await res.json() };
+    try {
+        const res = await fetch(`${API}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+        return { ok: res.ok, status: res.status, data: await res.json() };
+    } catch {
+        return { ok: false, status: 0, data: {} };
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -104,7 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "/admin";
         } else {
             showError("login-error",
-                status === 401 ? "Email ou mot de passe incorrect." : "Erreur serveur, réessaie."
+                status === 0   ? "Impossible de joindre le serveur." :
+                status === 401 ? "Email ou mot de passe incorrect." :
+                                 "Erreur serveur, réessaie."
             );
         }
     });
@@ -140,7 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } else {
             showError("register-error",
-                status === 409 ? "Cet email est déjà utilisé." : "Erreur serveur, réessaie."
+                status === 0   ? "Impossible de joindre le serveur." :
+                status === 409 ? "Cet email est déjà utilisé." :
+                                 "Erreur serveur, réessaie."
             );
         }
     });
