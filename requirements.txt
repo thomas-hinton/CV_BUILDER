@@ -1,6 +1,11 @@
 fastapi
 uvicorn[standard]
 
+# Auth
+bcrypt
+python-jose[cryptography]
+email-validator
+
 # Testing
 pytest
 pytest-asyncio

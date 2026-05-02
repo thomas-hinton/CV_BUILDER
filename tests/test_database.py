@@ -44,14 +44,14 @@ def test_users_table_columns():
     conn = get_in_memory_db()
     cursor = conn.execute("PRAGMA table_info(users);")
     columns = {row[1] for row in cursor.fetchall()}
-    assert {"id_user_mail", "password"}.issubset(columns)
+    assert {"id", "email", "password_hash", "created_at"}.issubset(columns)
 
 
 def test_cv_profiles_table_columns():
     conn = get_in_memory_db()
     cursor = conn.execute("PRAGMA table_info(cv_profiles);")
     columns = {row[1] for row in cursor.fetchall()}
-    assert {"id_user_page", "nom", "prenom", "id_user_mail"}.issubset(columns)
+    assert {"id_user_page", "nom", "prenom", "user_id"}.issubset(columns)
 
 
 # ---------------------------------------------------------------------------
@@ -59,13 +59,13 @@ def test_cv_profiles_table_columns():
 # ---------------------------------------------------------------------------
 
 def test_fk_cv_profile_requires_existing_user():
-    """Inserting a cv_profile with a non-existent id_user_mail must fail."""
+    """Inserting a cv_profile with a non-existent user_id must fail."""
     conn = get_in_memory_db()
     with pytest.raises(sqlite3.IntegrityError):
         conn.execute(
             """
-            INSERT INTO cv_profiles (id_user_page, nom, prenom, id_user_mail)
-            VALUES ('profile-1', 'Dupont', 'Jean', 'nobody@nowhere.com')
+            INSERT INTO cv_profiles (id_user_page, nom, prenom, user_id)
+            VALUES ('profile-1', 'Dupont', 'Jean', 'nonexistent-uuid')
             """
         )
         conn.commit()
@@ -75,12 +75,12 @@ def test_fk_cv_profile_with_valid_user_succeeds():
     """Inserting a cv_profile linked to an existing user must succeed."""
     conn = get_in_memory_db()
     conn.execute(
-        "INSERT INTO users (id_user_mail, password) VALUES ('user@test.com', 'hashed')"
+        "INSERT INTO users (id, email, password_hash) VALUES ('uuid-1', 'user@test.com', 'hashed')"
     )
     conn.execute(
         """
-        INSERT INTO cv_profiles (id_user_page, nom, prenom, id_user_mail)
-        VALUES ('profile-1', 'Dupont', 'Jean', 'user@test.com')
+        INSERT INTO cv_profiles (id_user_page, nom, prenom, user_id)
+        VALUES ('profile-1', 'Dupont', 'Jean', 'uuid-1')
         """
     )
     conn.commit()

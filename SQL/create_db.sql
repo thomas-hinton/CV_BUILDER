@@ -1,9 +1,11 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
-   id_user_mail VARCHAR(50),
-   password     VARCHAR(50) NOT NULL,
-   PRIMARY KEY (id_user_mail)
+   id            VARCHAR(36)  NOT NULL,
+   email         VARCHAR(100) NOT NULL UNIQUE,
+   password_hash VARCHAR(255) NOT NULL,
+   created_at    DATETIME     NOT NULL DEFAULT (datetime('now')),
+   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS cv_profiles (
@@ -14,9 +16,9 @@ CREATE TABLE IF NOT EXISTS cv_profiles (
    tel          CHAR(10),
    email        VARCHAR(50),
    adresse      TEXT,
-   id_user_mail VARCHAR(50) NOT NULL,
+   user_id      VARCHAR(36) NOT NULL,
    PRIMARY KEY (id_user_page),
-   FOREIGN KEY (id_user_mail) REFERENCES users (id_user_mail)
+   FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS formations (
