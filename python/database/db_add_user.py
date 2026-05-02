@@ -1,8 +1,6 @@
-# TODO (Phase 2): Replace these stubs with proper CRUD functions that receive
-# an authenticated user_id from the auth layer (Phase 1).
-# A cv_profile cannot be created without a parent user in the users table.
-# The old implementation was inserting cv_profiles with id_user_mail = "",
-# which violates the foreign key constraint and corrupts the database silently.
+# These functions are stubs kept for reference.
+# Profile CRUD is now handled by python/services/profiles.py (Phase 2).
+# These could be repurposed or removed in a future cleanup phase.
 
 
 def addUserIntoDatabaseByName(name: str):

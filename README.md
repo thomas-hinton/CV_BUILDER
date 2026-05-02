@@ -1,64 +1,38 @@
 # CV Builder
 
-Application web d'apprentissage pour construire un CV depuis une interface simple, avec un backend FastAPI et une base SQLite.
+Application web multi-utilisateurs pour créer et publier un CV en ligne, avec un backend FastAPI et une base SQLite.
 
-Le projet sert aussi de support pour comprendre les relations entre :
+## Fonctionnalités implémentées
 
-- une page HTML/CSS/JavaScript;
-- une API backend FastAPI;
-- une base de donnees SQLite;
-- une future authentification utilisateur.
+- **Authentification** — register, login, logout via JWT (bcrypt + python-jose)
+- **Profil CV** — création, lecture, modification, suppression (1 profil par compte)
+- **Formations** — CRUD complet `/profiles/me/educations`
+- **Expériences** — CRUD complet `/profiles/me/experiences`
+- **Compétences** — CRUD complet `/profiles/me/skills`
+- **Slug auto-généré** — URL propre `/cv/prenom-nom` (déduplication automatique)
+- **23 tests** — schéma SQL, authentification, CRUD complet
 
-## Etat actuel
+## À venir
 
-Le projet contient actuellement :
-
-- une application FastAPI dans `main.py` (initialisation + inclusion des routers);
-- un router `python/routers/profiles.py` avec les endpoints existants;
-- des schemas Pydantic dans `python/schemas/`;
-- une couche `python/services/` vide, prete pour la Phase 1 (auth);
-- une page d'accueil servie sur `/`;
-- une page d'edition servie sur `/admin`;
-- des fichiers statiques dans `css/`, `js/` et `assets/`;
-- un schema SQL dans `SQL/create_db.sql`;
-- un script de creation de base dans `scripts/init_db.py`;
-- 7 tests d'integrite de schema dans `tests/`.
-
-L'authentification, les formulaires complets de CV, la sauvegarde des formations/experiences et l'export du CV restent a construire.
+- Page login/register connectée à l'API
+- Dashboard admin pour saisir son CV
+- Page CV publique (`/cv/{slug}`)
 
 ## Installation
 
-Depuis la racine du projet :
-
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate        # Linux/macOS
+# .\.venv\Scripts\Activate.ps1  # Windows PowerShell
 pip install -r requirements.txt
 ```
 
-Sous Windows PowerShell :
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-## Initialiser la base de donnees
-
-Pour creer la base SQLite si elle n'existe pas :
+## Initialiser la base de données
 
 ```bash
-python scripts/init_db.py
+python scripts/init_db.py        # crée data/db.db
+python scripts/init_db.py --reset  # repart d'une base vide
 ```
-
-Pour repartir d'une base vide :
-
-```bash
-python scripts/init_db.py --reset
-```
-
-La base est creee dans `data/db.db`. Ce fichier est volontairement ignore par Git.
 
 ## Lancer l'application
 
@@ -75,37 +49,32 @@ Puis ouvrir :
 ## Lancer les tests
 
 ```bash
-python -m pytest
-```
-
-Ou avec le detail de chaque test :
-
-```bash
 python -m pytest -v
 ```
 
-Les tests couvrent l'integrite du schema SQL et l'application des cles etrangeres.
-Ils tournent sur une base SQLite en memoire — aucun fichier n'est cree sur le disque.
+Les tests tournent sur une base SQLite en mémoire isolée — aucun fichier créé sur le disque.
 
 ## Structure
 
 ```text
 .
-+-- main.py               # initialisation FastAPI + inclusion des routers
-+-- requirements.txt
-+-- README.md
-+-- SQL/
-|   +-- create_db.sql
-+-- scripts/
-|   +-- init_db.py
-+-- python/
-|   +-- routers/          # un fichier par domaine metier
-|   +-- schemas/          # modeles Pydantic
-|   +-- services/         # logique metier (Phase 1+)
-|   +-- database/         # connexion SQLite et requetes
-+-- tests/
-+-- css/
-+-- js/
-+-- assets/
-+-- data/
+├── main.py                  # initialisation FastAPI + routers
+├── requirements.txt
+├── SQL/
+│   └── create_db.sql        # schéma de la base (5 tables)
+├── scripts/
+│   └── init_db.py           # script de création/reset de la DB
+├── python/
+│   ├── routers/             # auth.py, profiles.py
+│   ├── schemas/             # modèles Pydantic (auth, profiles)
+│   ├── services/            # logique métier (auth, profiles)
+│   └── database/            # connexion SQLite partagée
+├── tests/
+│   ├── test_database.py     # intégrité schéma + FK
+│   ├── test_auth.py         # register, login, JWT
+│   └── test_crud.py         # profils, formations, expériences, compétences
+├── css/
+├── js/
+└── assets/
 ```
+

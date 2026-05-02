@@ -15,7 +15,7 @@ from python.database.connection import get_connection
 # ---------------------------------------------------------------------------
 # Configuration — in production these must come from environment variables
 # ---------------------------------------------------------------------------
-SECRET_KEY = "change-me-in-production"  # TODO: move to .env in Phase 2
+SECRET_KEY = "change-me-in-production"  # TODO: move to .env before any deployment (Phase 5)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
