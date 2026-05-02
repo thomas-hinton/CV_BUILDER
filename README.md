@@ -69,6 +69,21 @@ Puis ouvrir :
 - `http://127.0.0.1:8000/admin` pour la page d'edition en cours de construction;
 - `http://127.0.0.1:8000/docs` pour la documentation interactive FastAPI.
 
+## Lancer les tests
+
+```bash
+python -m pytest
+```
+
+Ou avec le detail de chaque test :
+
+```bash
+python -m pytest -v
+```
+
+Les tests couvrent l'integrite du schema SQL et l'application des cles etrangeres.
+Ils tournent sur une base SQLite en memoire — aucun fichier n'est cree sur le disque.
+
 ## Structure
 
 ```text
