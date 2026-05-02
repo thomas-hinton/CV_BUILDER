@@ -1,19 +1,165 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-    <head>
-        <title>CV Builder</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Builder — Connexion</title>
+    <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/auth.js" defer></script>
+    <style>
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    </head>
+        .auth-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+        }
 
+        .auth-card h1 {
+            margin: 0 0 24px;
+            font-size: 1.6rem;
+            text-align: center;
+            color: var(--text);
+        }
 
-    <body>
-        <h1>En construction</h1>
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
 
+        .tabs button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--muted);
+            transition: all 0.15s;
+        }
 
-    </body>
+        .tabs button.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
 
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.15s;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            display: none;
+            color: #dc2626;
+            font-size: 0.88rem;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <h1>CV Builder</h1>
+
+            <div class="tabs">
+                <button id="tab-login" data-label="Connexion">Connexion</button>
+                <button id="tab-register" data-label="Créer un compte">Créer un compte</button>
+            </div>
+
+            <!-- Login form -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" autocomplete="email" required placeholder="ton@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" id="btn-login" class="btn-primary" data-label="Se connecter">Se connecter</button>
+                <div id="login-error" class="error-msg"></div>
+            </form>
+
+            <!-- Register form -->
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" autocomplete="email" required placeholder="ton@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Mot de passe</label>
+                    <input type="password" id="register-password" autocomplete="new-password" required placeholder="6 caractères minimum">
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm">Confirmer le mot de passe</label>
+                    <input type="password" id="register-confirm" autocomplete="new-password" required>
+                </div>
+                <button type="submit" id="btn-register" class="btn-primary" data-label="Créer mon compte">Créer mon compte</button>
+                <div id="register-error" class="error-msg"></div>
+            </form>
+
+        </div>
+    </div>
+</body>
 
 </html>
