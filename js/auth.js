@@ -8,7 +8,7 @@
  * For a production deployment, prefer HttpOnly cookies.
  */
 
-const API = "http://127.0.0.1:8000";
+const API = ""; // chemins relatifs — fonctionne quel que soit l'hôte
 
 // ---------------------------------------------------------------------------
 // Helpers

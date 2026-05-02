@@ -5,7 +5,7 @@
  * (Claude Sonnet 4.6) and reviewed by the project author.
  */
 
-const API = "http://127.0.0.1:8000";
+const API = ""; // chemins relatifs — fonctionne quel que soit l'hôte
 
 // Track whether a profile already exists so we know which HTTP method to use.
 let profileExists = false;
