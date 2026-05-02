@@ -3,10 +3,15 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 # Personal modules
 from python.database.db_add_user import addUserIntoDatabaseByName
 from python.database.db_get_user import getUserFromDatabaseByName
+
+
+class ModifyNameRequest(BaseModel):
+    name: str
 
 
 app = FastAPI()
@@ -27,9 +32,9 @@ def admin():
     return FileResponse(BASE_DIR / "admin.html")
 
 @app.post("/modify_name")
-def modify_name(name: str):
-    print(f"Modifying name to {name}")
-    return(addUserIntoDatabaseByName(name))
+def modify_name(payload: ModifyNameRequest):
+    print(f"Modifying name to {payload.name}")
+    return addUserIntoDatabaseByName(payload.name)
 
 @app.get("/get_user_by_name")
 def get_user_by_name(name: str):

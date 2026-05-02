@@ -60,8 +60,12 @@ async function modifyName() {
             //Call to endpoint
             try {
                 const response = await fetch(
-                `http://127.0.0.1:8000/modify_name?name=${encodeURIComponent(name)}`,
-                { method: "POST" }
+                "http://127.0.0.1:8000/modify_name",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name })
+                }
                 );
 
                 if (!response.ok) {
