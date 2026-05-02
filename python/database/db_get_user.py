@@ -1,19 +1,13 @@
-import sqlite3
-from pathlib import Path
-
-DB_PATH = Path(__file__).resolve().parents[2] / "data" / "db.db"
+from python.database.connection import get_connection
 
 
 def getUserFromDatabaseByName(name: str):
-    print(f"Getting user {name} from database")
-
     # Recleaning for security
     clean_name = name.strip()
     if not clean_name:
         return {"status": "error", "message": "Nom vide"}
 
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("PRAGMA foreign_keys = ON;")
+    conn = get_connection()
     cursor = conn.cursor()
 
     try:

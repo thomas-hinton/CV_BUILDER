@@ -1,10 +1,3 @@
-import sqlite3
-import uuid
-from pathlib import Path
-
-DB_PATH = Path(__file__).resolve().parents[2] / "data" / "db.db"
-
-
 # TODO (Phase 2): Replace these stubs with proper CRUD functions that receive
 # an authenticated user_id from the auth layer (Phase 1).
 # A cv_profile cannot be created without a parent user in the users table.
