@@ -2,88 +2,353 @@
 <html lang="fr">
 
 <head>
-    <!-- DISCLAIMER : Favicon AI generated-->
-    <link rel="icon" href="/assets/logo.png" type="image/png">
-    <link rel="stylesheet" href="/css/index.css">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Builder</title>
-    <script src="js/admin.js"></script>
-    
+    <title>CV Builder — Mon CV</title>
+    <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/admin.js" defer></script>
+    <style>
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 28px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .btn-logout {
+            padding: 8px 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .btn-logout:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+        .page-content {
+            max-width: 860px;
+            margin: 32px auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            margin: 0 0 20px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            color: var(--text);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 20px;
+        }
+
+        .form-full { grid-column: 1 / -1; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"],
+        .form-group textarea {
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.15s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus { border-color: var(--primary); }
+
+        .form-group textarea { resize: vertical; min-height: 70px; }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .checkbox-group label { font-size: 0.92rem; cursor: pointer; margin: 0; }
+        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+
+        .btn-primary {
+            padding: 10px 22px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .btn-primary:hover { opacity: 0.9; }
+
+        .btn-delete {
+            padding: 5px 12px;
+            background: transparent;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            color: #dc2626;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover { background: #fef2f2; }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.93rem;
+            gap: 10px;
+        }
+
+        .list-item span { flex: 1; }
+
+        .empty { color: var(--muted); font-size: 0.9rem; font-style: italic; }
+
+        .msg {
+            display: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            margin-top: 10px;
+        }
+
+        .msg-ok    { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+        .msg-error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+
+        .info-text {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin: -10px 0 14px;
+        }
+
+        .section-status {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 14px;
+            font-style: italic;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>CV Builder</h1>
-    <p>Bienvenue sur le CV Builder ! Créez votre CV en quelques étapes simples.</p>
-    
-    <div id="personal-info">
-        <h2>Informations personnelles</h2>
-
-        <div id="div_name">
-            <label for="name">Nom :</label>
-            <input type="text" id="name" name="name"><br><br>
-            <button id="modify-name">Modifier le nom</button><br><br>
-        </div>
-
-        <div id="div_surname">
-            <label for="surname">Prénom :</label>
-            <input type="text" id="surname" name="surname"><br><br>
-            <button id="modify-surname">Modifier le prénom</button><br><br>
-        </div>
-
-        <div id="div_email">
-            <label for="email">Email :</label>
-            <input type="email" id="email" name="email"><br><br>
-            <button id="modify-email">Modifier l'email</button><br><br>
-        </div>
-
-        <div id="div_phone">
-            <label for="phone">Téléphone :</label>
-            <input type="tel" id="phone" name="phone"><br><br>
-            <button id="modify-phone">Modifier le téléphone</button><br><br>
-        </div>
+    <!-- Top bar -->
+    <div class="topbar">
+        <h1>CV Builder</h1>
+        <button id="btn-logout" class="btn-logout">Se déconnecter</button>
     </div>
 
-    <div id="education">
-        <h2>Formation</h2>
+    <div class="page-content">
 
-        <!-- Liste des formations ajoutées dynamiquement-->
-        <div id="formations-list"></div> 
+        <!-- ---- Profil ---- -->
+        <div class="card">
+            <h2>Informations personnelles</h2>
+            <p id="profile-status" class="section-status"></p>
+            <p id="profile-slug-info" class="info-text"></p>
 
-        <label for="degree">Diplôme :</label>
-        <input type="text" id="degree" name="degree"><br><br>
+            <form id="profile-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="f-nom">Nom *</label>
+                        <input type="text" id="f-nom" required maxlength="50" placeholder="Hinton">
+                    </div>
+                    <div class="form-group">
+                        <label for="f-prenom">Prénom *</label>
+                        <input type="text" id="f-prenom" required maxlength="50" placeholder="Thomas">
+                    </div>
+                    <div class="form-group">
+                        <label for="f-email">Email public</label>
+                        <input type="email" id="f-email" placeholder="thomas@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="f-tel">Téléphone (10 chiffres)</label>
+                        <input type="tel" id="f-tel" placeholder="0612345678" maxlength="10">
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="f-adresse">Adresse</label>
+                        <input type="text" id="f-adresse" placeholder="Paris, France">
+                    </div>
+                </div>
 
-        <label for="institution">Établissement :</label>
-        <input type="text" id="institution" name="institution"><br><br>
+                <hr class="divider">
 
-        <label for="year">Année d'obtention :</label>
-        <input type="number" id="year" name="year"><br><br>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="f-is-public">
+                    <label for="f-is-public">Rendre mon CV public (accessible via l'URL /cv/...)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="f-show-email">
+                    <label for="f-show-email">Afficher mon email sur le CV public</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="f-show-phone">
+                    <label for="f-show-phone">Afficher mon téléphone sur le CV public</label>
+                </div>
 
-        <button id="add-education">Ajouter une formation</button>
+                <button type="submit" class="btn-primary">Enregistrer</button>
+                <div id="profile-msg" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ---- Formations ---- -->
+        <div class="card">
+            <h2>Formations</h2>
+            <div id="formations-list"></div>
+
+            <hr class="divider">
+            <form id="formation-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fo-nom">Intitulé de la formation *</label>
+                        <input type="text" id="fo-nom" required maxlength="50" placeholder="BTS Informatique">
+                    </div>
+                    <div class="form-group">
+                        <label for="fo-organisme">Établissement *</label>
+                        <input type="text" id="fo-organisme" required maxlength="50" placeholder="Lycée X">
+                    </div>
+                    <div class="form-group">
+                        <label for="fo-date-debut">Date de début *</label>
+                        <input type="date" id="fo-date-debut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fo-date-fin">Date de fin</label>
+                        <input type="date" id="fo-date-fin">
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="fo-description">Description</label>
+                        <textarea id="fo-description" placeholder="Description optionnelle..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Ajouter</button>
+                <div id="formation-msg" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ---- Expériences ---- -->
+        <div class="card">
+            <h2>Expériences professionnelles</h2>
+            <div id="experiences-list"></div>
+
+            <hr class="divider">
+            <form id="experience-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ex-nom">Intitulé du poste *</label>
+                        <input type="text" id="ex-nom" required maxlength="50" placeholder="Développeur Web">
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-organisme">Entreprise</label>
+                        <input type="text" id="ex-organisme" maxlength="50" placeholder="Entreprise SAS">
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-date-debut">Date de début *</label>
+                        <input type="date" id="ex-date-debut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-date-fin">Date de fin</label>
+                        <input type="date" id="ex-date-fin">
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-lieu">Lieu</label>
+                        <input type="text" id="ex-lieu" placeholder="Paris, France">
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="ex-description">Description</label>
+                        <textarea id="ex-description" placeholder="Missions, technologies..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Ajouter</button>
+                <div id="experience-msg" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ---- Compétences ---- -->
+        <div class="card">
+            <h2>Compétences</h2>
+            <div id="skills-list"></div>
+
+            <hr class="divider">
+            <form id="skill-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="sk-nom">Compétence *</label>
+                        <input type="text" id="sk-nom" required maxlength="100" placeholder="Python">
+                    </div>
+                    <div class="form-group">
+                        <label for="sk-niveau">Niveau</label>
+                        <input type="text" id="sk-niveau" maxlength="100" placeholder="Avancé">
+                    </div>
+                    <div class="form-group">
+                        <label for="sk-categorie">Catégorie</label>
+                        <input type="text" id="sk-categorie" maxlength="100" placeholder="Langages">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">Ajouter</button>
+                <div id="skill-msg" class="msg"></div>
+            </form>
+        </div>
+
     </div>
-
-    <div id="user-experiences">
-        <h2>Expériences professionnelles</h2>
-
-        <!-- Liste des formations ajoutées dynamiquement-->
-        <div id="experiences-list"></div>
-        <label for="job-title">Intitulé du poste :</label>
-        <input type="text" id="job-title" name="job-title"><br><br>
-
-        <label for="company">Entreprise :</label>
-        <input type="text" id="company" name="company"><br><br>
-
-        <label for="duration">Durée :</label>
-        <input type="text" id="duration" name="duration"><br><br>
-
-        <button id="add-experience">Ajouter une expérience</button>
-    </div>
-
-
 
 </body>
-
 
 </html>
