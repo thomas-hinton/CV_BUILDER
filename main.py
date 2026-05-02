@@ -5,8 +5,8 @@ from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
 # Personal modules
-from python.database.db_add_user import *
-from python.database.db_get_user import *
+from python.database.db_add_user import addUserIntoDatabaseByName
+from python.database.db_get_user import getUserFromDatabaseByName
 
 
 app = FastAPI()
@@ -36,4 +36,3 @@ def get_user_by_name(name: str):
     print(f"Getting user by name {name}")
     return(getUserFromDatabaseByName(name))
 
-    
