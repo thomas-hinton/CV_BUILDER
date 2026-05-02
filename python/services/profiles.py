@@ -217,10 +217,10 @@ def create_formation(user_id: str, data: dict) -> dict:
 def get_formations(user_id: str) -> list[dict]:
     conn = get_connection()
     try:
-        _row_factory(conn)
         profile_id = _get_profile_id(conn, user_id)
         if not profile_id:
             return []
+        _row_factory(conn)
         return conn.execute(
             "SELECT * FROM formations WHERE id_user_page = ?", (profile_id,)
         ).fetchall()
@@ -316,10 +316,10 @@ def create_experience(user_id: str, data: dict) -> dict:
 def get_experiences(user_id: str) -> list[dict]:
     conn = get_connection()
     try:
-        _row_factory(conn)
         profile_id = _get_profile_id(conn, user_id)
         if not profile_id:
             return []
+        _row_factory(conn)
         return conn.execute(
             "SELECT * FROM experiences WHERE id_user_page = ?", (profile_id,)
         ).fetchall()
@@ -404,10 +404,10 @@ def create_skill(user_id: str, data: dict) -> dict:
 def get_skills(user_id: str) -> list[dict]:
     conn = get_connection()
     try:
-        _row_factory(conn)
         profile_id = _get_profile_id(conn, user_id)
         if not profile_id:
             return []
+        _row_factory(conn)
         return conn.execute(
             "SELECT * FROM skills WHERE id_user_page = ?", (profile_id,)
         ).fetchall()
