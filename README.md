@@ -13,13 +13,16 @@ Le projet sert aussi de support pour comprendre les relations entre :
 
 Le projet contient actuellement :
 
-- une application FastAPI dans `main.py`;
+- une application FastAPI dans `main.py` (initialisation + inclusion des routers);
+- un router `python/routers/profiles.py` avec les endpoints existants;
+- des schemas Pydantic dans `python/schemas/`;
+- une couche `python/services/` vide, prete pour la Phase 1 (auth);
 - une page d'accueil servie sur `/`;
 - une page d'edition servie sur `/admin`;
 - des fichiers statiques dans `css/`, `js/` et `assets/`;
-- deux endpoints de test autour du champ `nom`;
 - un schema SQL dans `SQL/create_db.sql`;
-- un script de creation de base dans `scripts/init_db.py`.
+- un script de creation de base dans `scripts/init_db.py`;
+- 7 tests d'integrite de schema dans `tests/`.
 
 L'authentification, les formulaires complets de CV, la sauvegarde des formations/experiences et l'export du CV restent a construire.
 
@@ -88,7 +91,7 @@ Ils tournent sur une base SQLite en memoire — aucun fichier n'est cree sur le 
 
 ```text
 .
-+-- main.py
++-- main.py               # initialisation FastAPI + inclusion des routers
 +-- requirements.txt
 +-- README.md
 +-- SQL/
@@ -96,7 +99,11 @@ Ils tournent sur une base SQLite en memoire — aucun fichier n'est cree sur le 
 +-- scripts/
 |   +-- init_db.py
 +-- python/
-|   +-- database/
+|   +-- routers/          # un fichier par domaine metier
+|   +-- schemas/          # modeles Pydantic
+|   +-- services/         # logique metier (Phase 1+)
+|   +-- database/         # connexion SQLite et requetes
++-- tests/
 +-- css/
 +-- js/
 +-- assets/
