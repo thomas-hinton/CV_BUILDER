@@ -50,3 +50,13 @@ CREATE TABLE IF NOT EXISTS experiences (
    PRIMARY KEY (id_experience),
    FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page)
 );
+
+CREATE TABLE IF NOT EXISTS skills (
+   id_skill     VARCHAR(50)  NOT NULL,
+   nom_skill    VARCHAR(100) NOT NULL,
+   niveau       VARCHAR(50),
+   categorie    VARCHAR(100),
+   id_user_page VARCHAR(50)  NOT NULL,
+   PRIMARY KEY (id_skill),
+   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page)
+);

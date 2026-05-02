@@ -1,3 +1,9 @@
+"""
+Pydantic schemas for authentication (register, login, token response).
+
+DISCLAIMER: This module was written with assistance from GitHub Copilot
+(Claude Sonnet 4.6) and reviewed by the project author.
+"""
 from pydantic import BaseModel, EmailStr
 
 

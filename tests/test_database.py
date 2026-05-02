@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 SCHEMA_PATH = Path(__file__).resolve().parents[1] / "SQL" / "create_db.sql"
-EXPECTED_TABLES = {"users", "cv_profiles", "formations", "experiences"}
+EXPECTED_TABLES = {"users", "cv_profiles", "formations", "experiences", "skills"}
 
 
 def get_in_memory_db() -> sqlite3.Connection:

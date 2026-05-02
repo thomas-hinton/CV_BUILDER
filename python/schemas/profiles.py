@@ -1,3 +1,9 @@
+"""
+Pydantic schemas for cv_profiles, formations, experiences and skills.
+
+DISCLAIMER: This module was written with assistance from GitHub Copilot
+(Claude Sonnet 4.6) and reviewed by the project author.
+"""
 import re
 from datetime import date
 
@@ -275,5 +281,71 @@ class ExperienceResponse(BaseModel):
     description_experience: str | None
     organisme_experience: str | None
     lieu_experience: str | None
+    id_user_page: str
+
+
+# ---------------------------------------------------------------------------
+# Skill — skills table
+# ---------------------------------------------------------------------------
+
+class SkillCreate(BaseModel):
+    nom_skill: str
+    niveau: str | None = None
+    categorie: str | None = None
+
+    @field_validator("nom_skill")
+    @classmethod
+    def max_100(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) > 100:
+            raise ValueError("100 caractères maximum")
+        if not v:
+            raise ValueError("Ne peut pas être vide")
+        return v
+
+    @field_validator("niveau", "categorie")
+    @classmethod
+    def max_100_optional(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        v = v.strip()
+        if len(v) > 100:
+            raise ValueError("100 caractères maximum")
+        return v
+
+
+class SkillUpdate(BaseModel):
+    nom_skill: str | None = None
+    niveau: str | None = None
+    categorie: str | None = None
+
+    @field_validator("nom_skill")
+    @classmethod
+    def max_100(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        v = v.strip()
+        if len(v) > 100:
+            raise ValueError("100 caractères maximum")
+        if not v:
+            raise ValueError("Ne peut pas être vide")
+        return v
+
+    @field_validator("niveau", "categorie")
+    @classmethod
+    def max_100_optional(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        v = v.strip()
+        if len(v) > 100:
+            raise ValueError("100 caractères maximum")
+        return v
+
+
+class SkillResponse(BaseModel):
+    id_skill: str
+    nom_skill: str
+    niveau: str | None
+    categorie: str | None
     id_user_page: str
 

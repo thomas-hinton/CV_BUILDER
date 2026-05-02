@@ -162,3 +162,300 @@ def delete_profile(user_id: str) -> dict:
         return {"status": "deleted"}
     finally:
         conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Helper: resolve id_user_page from user_id
+# ---------------------------------------------------------------------------
+
+def _get_profile_id(conn, user_id: str) -> str | None:
+    row = conn.execute(
+        "SELECT id_user_page FROM cv_profiles WHERE user_id = ?", (user_id,)
+    ).fetchone()
+    return row[0] if row else None
+
+
+def _row_factory(conn):
+    conn.row_factory = lambda c, r: dict(zip([col[0] for col in c.description], r))
+
+
+# ---------------------------------------------------------------------------
+# Formations CRUD
+# ---------------------------------------------------------------------------
+
+def create_formation(user_id: str, data: dict) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        formation_id = str(uuid.uuid4())
+        conn.execute(
+            """
+            INSERT INTO formations
+                (id_formation, nom_formation, date_debut, date_fin,
+                 description_formation, organisme_formation, diplome_url, id_user_page)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                formation_id,
+                data["nom_formation"],
+                str(data["date_debut"]),
+                str(data["date_fin"]) if data.get("date_fin") else None,
+                data.get("description_formation"),
+                data["organisme_formation"],
+                data.get("diplome_url"),
+                profile_id,
+            ),
+        )
+        conn.commit()
+        return {"status": "created", "id_formation": formation_id}
+    finally:
+        conn.close()
+
+
+def get_formations(user_id: str) -> list[dict]:
+    conn = get_connection()
+    try:
+        _row_factory(conn)
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return []
+        return conn.execute(
+            "SELECT * FROM formations WHERE id_user_page = ?", (profile_id,)
+        ).fetchall()
+    finally:
+        conn.close()
+
+
+def update_formation(user_id: str, formation_id: str, updates: dict) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        row = conn.execute(
+            "SELECT id_formation FROM formations WHERE id_formation = ? AND id_user_page = ?",
+            (formation_id, profile_id),
+        ).fetchone()
+        if not row:
+            return {"status": "error", "code": 404, "message": "Formation non trouvée"}
+        allowed = {
+            "nom_formation", "date_debut", "date_fin",
+            "description_formation", "organisme_formation", "diplome_url",
+        }
+        filtered = {k: (str(v) if hasattr(v, "isoformat") else v)
+                    for k, v in updates.items() if k in allowed}
+        if not filtered:
+            return {"status": "error", "code": 422, "message": "Aucun champ valide"}
+        set_clause = ", ".join(f"{k} = ?" for k in filtered)
+        conn.execute(
+            f"UPDATE formations SET {set_clause} WHERE id_formation = ?",  # noqa: S608
+            [*filtered.values(), formation_id],
+        )
+        conn.commit()
+        return {"status": "updated"}
+    finally:
+        conn.close()
+
+
+def delete_formation(user_id: str, formation_id: str) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        row = conn.execute(
+            "SELECT id_formation FROM formations WHERE id_formation = ? AND id_user_page = ?",
+            (formation_id, profile_id),
+        ).fetchone()
+        if not row:
+            return {"status": "error", "code": 404, "message": "Formation non trouvée"}
+        conn.execute("DELETE FROM formations WHERE id_formation = ?", (formation_id,))
+        conn.commit()
+        return {"status": "deleted"}
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Experiences CRUD
+# ---------------------------------------------------------------------------
+
+def create_experience(user_id: str, data: dict) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        experience_id = str(uuid.uuid4())
+        conn.execute(
+            """
+            INSERT INTO experiences
+                (id_experience, nom_experience, date_debut, date_fin,
+                 description_experience, organisme_experience, lieu_experience, id_user_page)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                experience_id,
+                data["nom_experience"],
+                str(data["date_debut"]),
+                str(data["date_fin"]) if data.get("date_fin") else None,
+                data.get("description_experience"),
+                data.get("organisme_experience"),
+                data.get("lieu_experience"),
+                profile_id,
+            ),
+        )
+        conn.commit()
+        return {"status": "created", "id_experience": experience_id}
+    finally:
+        conn.close()
+
+
+def get_experiences(user_id: str) -> list[dict]:
+    conn = get_connection()
+    try:
+        _row_factory(conn)
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return []
+        return conn.execute(
+            "SELECT * FROM experiences WHERE id_user_page = ?", (profile_id,)
+        ).fetchall()
+    finally:
+        conn.close()
+
+
+def update_experience(user_id: str, experience_id: str, updates: dict) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        row = conn.execute(
+            "SELECT id_experience FROM experiences WHERE id_experience = ? AND id_user_page = ?",
+            (experience_id, profile_id),
+        ).fetchone()
+        if not row:
+            return {"status": "error", "code": 404, "message": "Expérience non trouvée"}
+        allowed = {
+            "nom_experience", "date_debut", "date_fin",
+            "description_experience", "organisme_experience", "lieu_experience",
+        }
+        filtered = {k: (str(v) if hasattr(v, "isoformat") else v)
+                    for k, v in updates.items() if k in allowed}
+        if not filtered:
+            return {"status": "error", "code": 422, "message": "Aucun champ valide"}
+        set_clause = ", ".join(f"{k} = ?" for k in filtered)
+        conn.execute(
+            f"UPDATE experiences SET {set_clause} WHERE id_experience = ?",  # noqa: S608
+            [*filtered.values(), experience_id],
+        )
+        conn.commit()
+        return {"status": "updated"}
+    finally:
+        conn.close()
+
+
+def delete_experience(user_id: str, experience_id: str) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        row = conn.execute(
+            "SELECT id_experience FROM experiences WHERE id_experience = ? AND id_user_page = ?",
+            (experience_id, profile_id),
+        ).fetchone()
+        if not row:
+            return {"status": "error", "code": 404, "message": "Expérience non trouvée"}
+        conn.execute("DELETE FROM experiences WHERE id_experience = ?", (experience_id,))
+        conn.commit()
+        return {"status": "deleted"}
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Skills CRUD
+# ---------------------------------------------------------------------------
+
+def create_skill(user_id: str, data: dict) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        skill_id = str(uuid.uuid4())
+        conn.execute(
+            """
+            INSERT INTO skills (id_skill, nom_skill, niveau, categorie, id_user_page)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (skill_id, data["nom_skill"], data.get("niveau"), data.get("categorie"), profile_id),
+        )
+        conn.commit()
+        return {"status": "created", "id_skill": skill_id}
+    finally:
+        conn.close()
+
+
+def get_skills(user_id: str) -> list[dict]:
+    conn = get_connection()
+    try:
+        _row_factory(conn)
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return []
+        return conn.execute(
+            "SELECT * FROM skills WHERE id_user_page = ?", (profile_id,)
+        ).fetchall()
+    finally:
+        conn.close()
+
+
+def update_skill(user_id: str, skill_id: str, updates: dict) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        row = conn.execute(
+            "SELECT id_skill FROM skills WHERE id_skill = ? AND id_user_page = ?",
+            (skill_id, profile_id),
+        ).fetchone()
+        if not row:
+            return {"status": "error", "code": 404, "message": "Compétence non trouvée"}
+        allowed = {"nom_skill", "niveau", "categorie"}
+        filtered = {k: v for k, v in updates.items() if k in allowed}
+        if not filtered:
+            return {"status": "error", "code": 422, "message": "Aucun champ valide"}
+        set_clause = ", ".join(f"{k} = ?" for k in filtered)
+        conn.execute(
+            f"UPDATE skills SET {set_clause} WHERE id_skill = ?",  # noqa: S608
+            [*filtered.values(), skill_id],
+        )
+        conn.commit()
+        return {"status": "updated"}
+    finally:
+        conn.close()
+
+
+def delete_skill(user_id: str, skill_id: str) -> dict:
+    conn = get_connection()
+    try:
+        profile_id = _get_profile_id(conn, user_id)
+        if not profile_id:
+            return {"status": "error", "code": 404, "message": "Profil non trouvé"}
+        row = conn.execute(
+            "SELECT id_skill FROM skills WHERE id_skill = ? AND id_user_page = ?",
+            (skill_id, profile_id),
+        ).fetchone()
+        if not row:
+            return {"status": "error", "code": 404, "message": "Compétence non trouvée"}
+        conn.execute("DELETE FROM skills WHERE id_skill = ?", (skill_id,))
+        conn.commit()
+        return {"status": "deleted"}
+    finally:
+        conn.close()

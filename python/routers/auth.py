@@ -1,3 +1,9 @@
+"""
+Authentication endpoints (register, login, logout) and JWT dependency.
+
+DISCLAIMER: This module was written with assistance from GitHub Copilot
+(Claude Sonnet 4.6) and reviewed by the project author.
+"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
