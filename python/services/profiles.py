@@ -229,7 +229,8 @@ def get_formations(user_id: str) -> list[dict]:
             return []
         _row_factory(conn)
         return conn.execute(
-            "SELECT * FROM formations WHERE id_user_page = ?", (profile_id,)
+            "SELECT * FROM formations WHERE id_user_page = ? ORDER BY date_debut DESC",
+            (profile_id,),
         ).fetchall()
     finally:
         conn.close()
@@ -328,7 +329,8 @@ def get_experiences(user_id: str) -> list[dict]:
             return []
         _row_factory(conn)
         return conn.execute(
-            "SELECT * FROM experiences WHERE id_user_page = ?", (profile_id,)
+            "SELECT * FROM experiences WHERE id_user_page = ? ORDER BY date_debut DESC",
+            (profile_id,),
         ).fetchall()
     finally:
         conn.close()
@@ -493,7 +495,8 @@ def get_skills(user_id: str) -> list[dict]:
             return []
         _row_factory(conn)
         return conn.execute(
-            "SELECT * FROM skills WHERE id_user_page = ?", (profile_id,)
+            "SELECT * FROM skills WHERE id_user_page = ? ORDER BY categorie, nom_skill",
+            (profile_id,),
         ).fetchall()
     finally:
         conn.close()
