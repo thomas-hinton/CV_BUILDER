@@ -278,3 +278,41 @@ async def test_slug_deduplication():
         assert r2.status_code == 201
         assert r1.json()["slug"] != r2.json()["slug"]
         assert r2.json()["slug"] == "paul-moreau-2"
+
+
+# ---------------------------------------------------------------------------
+# 8. Public CV must not expose internal fields
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_public_cv_does_not_expose_internal_fields():
+    """
+    /cv/{slug}/data must never return user_id, id_user_page, is_public,
+    show_email or show_phone — these are internal fields.
+    """
+    internal_fields = {"user_id", "id_user_page", "is_public", "show_email", "show_phone"}
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        token = await _full_setup(client)
+        await client.patch("/profiles/me", headers=_auth(token), json={"is_public": True})
+
+        profile_r = await client.get("/profiles/me", headers=_auth(token))
+        slug = profile_r.json()["slug"]
+
+        r = await client.get(f"/cv/{slug}/data")
+        assert r.status_code == 200
+        data = r.json()
+
+        # Profile must not contain any internal field
+        assert not internal_fields & set(data["profile"].keys()), (
+            f"Internal fields found in public profile: "
+            f"{internal_fields & set(data['profile'].keys())}"
+        )
+
+        # Sub-resources must not expose id_user_page
+        for formation in data["formations"]:
+            assert "id_user_page" not in formation
+        for experience in data["experiences"]:
+            assert "id_user_page" not in experience
+        for skill in data["skills"]:
+            assert "id_user_page" not in skill

@@ -394,8 +394,11 @@ def delete_experience(user_id: str, experience_id: str) -> dict:
 
 def get_public_cv(slug: str) -> dict | None:
     """
-    Return the full public CV for a given slug, or None if not found/private.
-    Respects show_email and show_phone flags.
+    Return the public CV for a given slug, or None if not found/private.
+
+    Only public-safe fields are returned. Internal identifiers (user_id,
+    id_user_page) and visibility flags (is_public, show_email, show_phone)
+    are never exposed. Email and tel are included only if the owner opted in.
     """
     conn = get_connection()
     try:
@@ -409,29 +412,54 @@ def get_public_cv(slug: str) -> dict | None:
 
         profile_id = profile["id_user_page"]
 
-        # Mask contact info if owner chose to hide it
-        if not profile["show_email"]:
-            profile["email"] = None
-        if not profile["show_phone"]:
-            profile["tel"] = None
+        # Build a public-safe profile dict — never expose internal fields
+        public_profile = {
+            "nom":     profile["nom"],
+            "prenom":  profile["prenom"],
+            "adresse": profile["adresse"],
+            "slug":    profile["slug"],
+            # Contact info: only included if the owner opted in
+            "email": profile["email"] if profile["show_email"] else None,
+            "tel":   profile["tel"]   if profile["show_phone"] else None,
+        }
 
         formations = conn.execute(
-            "SELECT * FROM formations WHERE id_user_page = ?", (profile_id,)
+            """
+            SELECT id_formation, nom_formation, organisme_formation,
+                   date_debut, date_fin, description_formation, diplome_url
+            FROM formations
+            WHERE id_user_page = ?
+            ORDER BY date_debut DESC
+            """,
+            (profile_id,),
         ).fetchall()
 
         experiences = conn.execute(
-            "SELECT * FROM experiences WHERE id_user_page = ?", (profile_id,)
+            """
+            SELECT id_experience, nom_experience, organisme_experience,
+                   lieu_experience, date_debut, date_fin, description_experience
+            FROM experiences
+            WHERE id_user_page = ?
+            ORDER BY date_debut DESC
+            """,
+            (profile_id,),
         ).fetchall()
 
         skills = conn.execute(
-            "SELECT * FROM skills WHERE id_user_page = ?", (profile_id,)
+            """
+            SELECT id_skill, nom_skill, niveau, categorie
+            FROM skills
+            WHERE id_user_page = ?
+            ORDER BY categorie, nom_skill
+            """,
+            (profile_id,),
         ).fetchall()
 
         return {
-            "profile": profile,
-            "formations": formations,
+            "profile":     public_profile,
+            "formations":  formations,
             "experiences": experiences,
-            "skills": skills,
+            "skills":      skills,
         }
     finally:
         conn.close()
