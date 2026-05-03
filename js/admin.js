@@ -135,6 +135,7 @@ async function loadProfile() {
         link.className = "cv-link";
         link.target = "_blank";
         slugInfo.appendChild(link);
+    set("f-nom",        data.nom);
     set("f-prenom",     data.prenom);
     set("f-email",      data.email);
     set("f-tel",        data.tel);
