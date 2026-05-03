@@ -58,16 +58,25 @@ async def _register(client, email="user@example.com", password="StrongPass1!"):
 @pytest.mark.asyncio
 async def test_register_success():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        r = await client.post("/auth/register", json={"email": "a@b.com", "password": "pass"})
+        r = await client.post("/auth/register",
+                              json={"email": "a@b.com", "password": "password123"})
     assert r.status_code == 201
 
 
 @pytest.mark.asyncio
 async def test_register_duplicate_email_returns_409():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        await client.post("/auth/register", json={"email": "a@b.com", "password": "pass"})
-        r = await client.post("/auth/register", json={"email": "a@b.com", "password": "other"})
+        await client.post("/auth/register", json={"email": "a@b.com", "password": "password123"})
+        r = await client.post("/auth/register", json={"email": "a@b.com", "password": "other1234"})
     assert r.status_code == 409
+
+
+@pytest.mark.asyncio
+async def test_register_short_password_returns_422():
+    """Backend must reject passwords shorter than 8 characters (front can be bypassed)."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        r = await client.post("/auth/register", json={"email": "a@b.com", "password": "short"})
+    assert r.status_code == 422
 
 
 # ---------------------------------------------------------------------------
@@ -77,8 +86,8 @@ async def test_register_duplicate_email_returns_409():
 @pytest.mark.asyncio
 async def test_login_success_returns_token():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        await client.post("/auth/register", json={"email": "a@b.com", "password": "pass"})
-        r = await client.post("/auth/login", json={"email": "a@b.com", "password": "pass"})
+        await client.post("/auth/register", json={"email": "a@b.com", "password": "password123"})
+        r = await client.post("/auth/login", json={"email": "a@b.com", "password": "password123"})
     assert r.status_code == 200
     data = r.json()
     assert "access_token" in data
@@ -88,13 +97,14 @@ async def test_login_success_returns_token():
 @pytest.mark.asyncio
 async def test_login_wrong_password_returns_401():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        await client.post("/auth/register", json={"email": "a@b.com", "password": "pass"})
-        r = await client.post("/auth/login", json={"email": "a@b.com", "password": "wrong"})
+        await client.post("/auth/register", json={"email": "a@b.com", "password": "password123"})
+        r = await client.post("/auth/login", json={"email": "a@b.com", "password": "wrongpass"})
     assert r.status_code == 401
 
 
 @pytest.mark.asyncio
 async def test_login_unknown_email_returns_401():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        r = await client.post("/auth/login", json={"email": "nobody@x.com", "password": "pass"})
+        r = await client.post("/auth/login",
+                              json={"email": "nobody@x.com", "password": "password123"})
     assert r.status_code == 401

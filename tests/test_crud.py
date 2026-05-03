@@ -43,7 +43,7 @@ def reset_db(tmp_path, monkeypatch):
 # Helpers
 # ---------------------------------------------------------------------------
 
-async def _register_and_login(client, email="user@test.com", password="pass"):
+async def _register_and_login(client, email="user@test.com", password="password123"):
     await client.post("/auth/register", json={"email": email, "password": password})
     r = await client.post("/auth/login", json={"email": email, "password": password})
     return r.json()["access_token"]
