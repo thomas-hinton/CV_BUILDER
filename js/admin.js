@@ -126,10 +126,15 @@ async function loadProfile() {
 
     profileExists = true;
     document.getElementById("profile-status").textContent = "";
-    document.getElementById("profile-slug-info").textContent =
-        `URL publique : /cv/${data.slug}`;
 
-    set("f-nom",        data.nom);
+        const slugInfo = document.getElementById("profile-slug-info");
+        slugInfo.innerHTML = "URL publique : ";
+        const link = document.createElement("a");
+        link.href = `/cv/${data.slug}`;
+        link.textContent = `/cv/${data.slug}`;
+        link.className = "cv-link";
+        link.target = "_blank";
+        slugInfo.appendChild(link);
     set("f-prenom",     data.prenom);
     set("f-email",      data.email);
     set("f-tel",        data.tel);
@@ -166,8 +171,15 @@ async function saveProfile(e) {
     if (ok) {
         profileExists = true;
         showMsg("profile-msg", "Profil sauvegardé ✓");
-        document.getElementById("profile-slug-info").textContent =
-            `URL publique : /cv/${data.slug}`;
+
+        const slugInfo = document.getElementById("profile-slug-info");
+        slugInfo.innerHTML = "URL publique : ";
+        const link = document.createElement("a");
+        link.href = `/cv/${data.slug}`;
+        link.textContent = `/cv/${data.slug}`;
+        link.className = "cv-link";
+        link.target = "_blank";
+        slugInfo.appendChild(link);
         if (method === "POST") {
             await loadFormations();
             await loadExperiences();
