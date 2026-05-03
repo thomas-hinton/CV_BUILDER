@@ -148,7 +148,9 @@ async def test_add_formation():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         token = await _register_and_login(client)
         await client.post("/profiles", json=_PROFILE_PAYLOAD, headers=_auth(token))
-        r = await client.post("/profiles/me/educations", json=_FORMATION_PAYLOAD, headers=_auth(token))
+        r = await client.post(
+            "/profiles/me/educations", json=_FORMATION_PAYLOAD, headers=_auth(token)
+        )
     assert r.status_code == 201
     assert r.json()["nom_formation"] == "Bac S"
 

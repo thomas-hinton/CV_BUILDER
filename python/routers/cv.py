@@ -4,9 +4,10 @@ Public CV router — no authentication required.
 DISCLAIMER: This module was written with assistance from GitHub Copilot
 (Claude Sonnet 4.6) and reviewed by the project author.
 """
+from pathlib import Path
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-from pathlib import Path
 
 from python.services.profiles import get_public_cv
 

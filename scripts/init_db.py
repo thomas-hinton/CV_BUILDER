@@ -4,7 +4,6 @@ import argparse
 import sqlite3
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = PROJECT_ROOT / "SQL" / "create_db.sql"
 DB_PATH = PROJECT_ROOT / "data" / "db.db"

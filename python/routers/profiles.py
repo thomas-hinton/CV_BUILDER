@@ -96,7 +96,11 @@ def delete_my_profile(user_id: str = Depends(get_current_user)):
 # Formations
 # ---------------------------------------------------------------------------
 
-@router.post("/me/educations", status_code=status.HTTP_201_CREATED, response_model=FormationResponse)
+@router.post(
+    "/me/educations",
+    status_code=status.HTTP_201_CREATED,
+    response_model=FormationResponse,
+)
 def add_education(payload: FormationCreate, user_id: str = Depends(get_current_user)):
     result = create_formation(user_id, payload.model_dump())
     if result["status"] == "error":
@@ -135,7 +139,11 @@ def remove_education(formation_id: str, user_id: str = Depends(get_current_user)
 # Experiences
 # ---------------------------------------------------------------------------
 
-@router.post("/me/experiences", status_code=status.HTTP_201_CREATED, response_model=ExperienceResponse)
+@router.post(
+    "/me/experiences",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ExperienceResponse,
+)
 def add_experience(payload: ExperienceCreate, user_id: str = Depends(get_current_user)):
     result = create_experience(user_id, payload.model_dump())
     if result["status"] == "error":

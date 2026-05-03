@@ -8,6 +8,7 @@ as defined in SQL/create_db.sql.
 """
 import sqlite3
 from pathlib import Path
+
 import pytest
 
 SCHEMA_PATH = Path(__file__).resolve().parents[1] / "SQL" / "create_db.sql"
@@ -96,7 +97,8 @@ def test_fk_formation_requires_existing_cv_profile():
     with pytest.raises(sqlite3.IntegrityError):
         conn.execute(
             """
-            INSERT INTO formations (id_formation, nom_formation, date_debut, organisme_formation, id_user_page)
+            INSERT INTO formations
+                (id_formation, nom_formation, date_debut, organisme_formation, id_user_page)
             VALUES ('form-1', 'Bac', '2020-01-01', 'Lycée X', 'nonexistent-profile')
             """
         )

@@ -10,7 +10,6 @@ import uuid
 
 from python.database.connection import get_connection
 
-
 # ---------------------------------------------------------------------------
 # Slug generation
 # ---------------------------------------------------------------------------
@@ -62,7 +61,11 @@ def create_profile(user_id: str, nom: str, prenom: str, **kwargs) -> dict:
             "SELECT id_user_page FROM cv_profiles WHERE user_id = ?", (user_id,)
         ).fetchone()
         if existing:
-            return {"status": "error", "code": 409, "message": "Ce compte possède déjà un profil CV"}
+            return {
+                "status": "error",
+                "code": 409,
+                "message": "Ce compte possède déjà un profil CV",
+            }
 
         profile_id = str(uuid.uuid4())
         base_slug = _slugify(f"{prenom} {nom}")
@@ -120,14 +123,18 @@ def update_profile(user_id: str, updates: dict) -> dict:
 
         # If slug explicitly provided, validate uniqueness
         if "slug" in updates:
-            new_slug = _generate_unique_slug(updates["slug"], exclude_user_page=profile["id_user_page"])
+            new_slug = _generate_unique_slug(
+                updates["slug"], exclude_user_page=profile["id_user_page"]
+            )
             updates["slug"] = new_slug
         elif "nom" in updates or "prenom" in updates:
             # Regenerate slug from new name
             nom = updates.get("nom", profile["nom"])
             prenom = updates.get("prenom", profile["prenom"])
             base_slug = _slugify(f"{prenom} {nom}")
-            updates["slug"] = _generate_unique_slug(base_slug, exclude_user_page=profile["id_user_page"])
+            updates["slug"] = _generate_unique_slug(
+                base_slug, exclude_user_page=profile["id_user_page"]
+            )
 
         allowed = {
             "nom", "prenom", "photo_profil", "tel", "email", "adresse",

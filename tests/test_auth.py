@@ -6,8 +6,7 @@ and reviewed by the project author. They cover user registration, login, and acc
 control as defined in python/routers/auth.py and python/services/auth.py.
 """
 import pytest
-import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
 from main import app
 
@@ -20,6 +19,7 @@ def reset_db(tmp_path, monkeypatch):
     """
     import sqlite3
     from pathlib import Path
+
     import python.database.connection as conn_module
     import python.services.auth as auth_module
 

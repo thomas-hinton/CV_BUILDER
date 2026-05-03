@@ -1,12 +1,13 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
-from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
 # Routers
 from python.routers.auth import router as auth_router
-from python.routers.profiles import router as profiles_router
 from python.routers.cv import router as cv_router
+from python.routers.profiles import router as profiles_router
 
 app = FastAPI()
 app.mount("/css", StaticFiles(directory="css"), name="css")

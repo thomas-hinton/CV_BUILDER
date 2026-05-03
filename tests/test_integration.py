@@ -16,7 +16,6 @@ from httpx import ASGITransport, AsyncClient
 import python.database.connection as conn_module
 import python.services.auth as auth_module
 import python.services.profiles as profiles_module
-import python.routers.cv as cv_module
 from main import app
 
 _SCHEMA = (Path(__file__).resolve().parents[1] / "SQL" / "create_db.sql").read_text()
