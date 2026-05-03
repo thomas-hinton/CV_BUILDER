@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS formations (
    diplome_url           TEXT,
    id_user_page          VARCHAR(50) NOT NULL,
    PRIMARY KEY (id_formation),
-   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page)
+   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS experiences (
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS experiences (
    lieu_experience       TEXT,
    id_user_page          VARCHAR(50) NOT NULL,
    PRIMARY KEY (id_experience),
-   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page)
+   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS skills (
@@ -58,5 +58,5 @@ CREATE TABLE IF NOT EXISTS skills (
    categorie    VARCHAR(100),
    id_user_page VARCHAR(50)  NOT NULL,
    PRIMARY KEY (id_skill),
-   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page)
+   FOREIGN KEY (id_user_page) REFERENCES cv_profiles (id_user_page) ON DELETE CASCADE
 );
