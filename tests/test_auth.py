@@ -79,6 +79,17 @@ async def test_register_short_password_returns_422():
     assert r.status_code == 422
 
 
+@pytest.mark.asyncio
+async def test_register_invalid_email_returns_422():
+    """Backend must reject malformed email addresses (Pydantic EmailStr)."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        r = await client.post(
+            "/auth/register",
+            json={"email": "pas-un-email", "password": "password123"},
+        )
+    assert r.status_code == 422
+
+
 # ---------------------------------------------------------------------------
 # Login
 # ---------------------------------------------------------------------------

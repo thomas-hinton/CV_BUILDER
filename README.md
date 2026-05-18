@@ -17,7 +17,7 @@ Application web multi-utilisateurs pour créer et publier un CV en ligne, avec u
 - **Masquage email/téléphone** — l'utilisateur choisit ce qui apparaît sur son CV public
 - **Endpoint public** — `GET /cv/{slug}/data` retourne uniquement les champs publics (aucun identifiant interne exposé)
 - **Validation des données** — schemas Pydantic avec validation email, format téléphone, longueurs, mot de passe minimum 8 caractères
-- **34 tests** — schéma SQL, authentification, CRUD, et intégration end-to-end (register → login → création profil → ajout formations/expériences/compétences → publication → lecture du CV public)
+- **38 tests** — schéma SQL, authentification, CRUD, et intégration end-to-end (register → login → création profil → ajout formations/expériences/compétences → publication → lecture du CV public)
 - **Linter** — `ruff` configuré, zéro erreur
 
 ### Frontend
@@ -110,13 +110,6 @@ De notre propre initiative, et dans un souci d'autocorrection et de progression,
 
 Le fichier [AI_REVIEWS.md](AI_REVIEWS.md) documente la phase actuelle du projet : les points soulevés lors de ces reviews, ce qui a déjà été corrigé en réponse, et ce qui reste à traiter avant la première release.
 
----
-
-## Corrections à venir avant la release
-
-- [ ] Tests manquants — email invalide → 422, date de fin avant date de début → 422
-
----
 
 ## Améliorations futures
 

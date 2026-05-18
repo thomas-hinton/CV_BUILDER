@@ -120,6 +120,17 @@ async def test_update_profile_field():
 
 
 @pytest.mark.asyncio
+async def test_update_profile_invalid_email_returns_422():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        token = await _register_and_login(client)
+        await client.post("/profiles", json=_PROFILE_PAYLOAD, headers=_auth(token))
+        r = await client.patch(
+            "/profiles/me", json={"email": "pas-un-email"}, headers=_auth(token)
+        )
+    assert r.status_code == 422
+
+
+@pytest.mark.asyncio
 async def test_update_profile_regenerates_slug():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         token = await _register_and_login(client)
@@ -164,6 +175,42 @@ async def test_list_formations():
         r = await client.get("/profiles/me/educations", headers=_auth(token))
     assert r.status_code == 200
     assert len(r.json()) == 1
+
+
+@pytest.mark.asyncio
+async def test_add_formation_date_fin_before_debut_returns_422():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        token = await _register_and_login(client)
+        await client.post("/profiles", json=_PROFILE_PAYLOAD, headers=_auth(token))
+        payload = {
+            **_FORMATION_PAYLOAD,
+            "date_debut": "2024-09-01",
+            "date_fin": "2020-06-30",
+        }
+        r = await client.post(
+            "/profiles/me/educations", json=payload, headers=_auth(token)
+        )
+    assert r.status_code == 422
+
+
+# ---------------------------------------------------------------------------
+# Experience tests
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_add_experience_date_fin_before_debut_returns_422():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        token = await _register_and_login(client)
+        await client.post("/profiles", json=_PROFILE_PAYLOAD, headers=_auth(token))
+        payload = {
+            **_EXPERIENCE_PAYLOAD,
+            "date_debut": "2024-06-01",
+            "date_fin": "2020-01-01",
+        }
+        r = await client.post(
+            "/profiles/me/experiences", json=payload, headers=_auth(token)
+        )
+    assert r.status_code == 422
 
 
 # ---------------------------------------------------------------------------
