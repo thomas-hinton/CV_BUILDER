@@ -114,13 +114,13 @@ Le fichier [AI_REVIEWS.md](AI_REVIEWS.md) documente la phase actuelle du projet 
 
 ## Corrections à venir avant la release
 
-- [ ] Ajouter l'édition des formations, expériences et compétences
 - [ ] Tests manquants — email invalide → 422, date de fin avant date de début → 422
 
 ---
 
 ## Améliorations futures
 
+- Ajouter l'édition des formations, expériences et compétences
 - Déployer l'application en ligne (Render ou équivalent)
 - Exporter le CV en PDF
 - Proposer plusieurs templates visuels pour le CV
