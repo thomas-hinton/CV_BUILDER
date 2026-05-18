@@ -106,6 +106,16 @@ function set(id, value) {
     else el.value = value ?? "";
 }
 
+/** Escape text before inserting into HTML templates (XSS prevention). */
+function esc(str) {
+    if (str == null || str === "") return "";
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
 // ---------------------------------------------------------------------------
 // Profile — load and save
 // ---------------------------------------------------------------------------
@@ -204,9 +214,9 @@ async function loadFormations() {
 function renderFormationItem(f) {
     return `
         <div class="list-item">
-            <span><strong>${f.nom_formation}</strong> — ${f.organisme_formation}
-            (${f.date_debut}${f.date_fin ? " → " + f.date_fin : ""})</span>
-            <button class="btn-delete" data-id="${f.id_formation}" data-type="formation">Supprimer</button>
+            <span><strong>${esc(f.nom_formation)}</strong> — ${esc(f.organisme_formation)}
+            (${esc(f.date_debut)}${f.date_fin ? " → " + esc(f.date_fin) : ""})</span>
+            <button class="btn-delete" data-id="${esc(f.id_formation)}" data-type="formation">Supprimer</button>
         </div>`;
 }
 
@@ -244,9 +254,9 @@ async function loadExperiences() {
 function renderExperienceItem(exp) {
     return `
         <div class="list-item">
-            <span><strong>${exp.nom_experience}</strong>${exp.organisme_experience ? " — " + exp.organisme_experience : ""}
-            (${exp.date_debut}${exp.date_fin ? " → " + exp.date_fin : ""})</span>
-            <button class="btn-delete" data-id="${exp.id_experience}" data-type="experience">Supprimer</button>
+            <span><strong>${esc(exp.nom_experience)}</strong>${exp.organisme_experience ? " — " + esc(exp.organisme_experience) : ""}
+            (${esc(exp.date_debut)}${exp.date_fin ? " → " + esc(exp.date_fin) : ""})</span>
+            <button class="btn-delete" data-id="${esc(exp.id_experience)}" data-type="experience">Supprimer</button>
         </div>`;
 }
 
@@ -285,8 +295,8 @@ async function loadSkills() {
 function renderSkillItem(s) {
     return `
         <div class="list-item">
-            <span><strong>${s.nom_skill}</strong>${s.niveau ? " — " + s.niveau : ""}${s.categorie ? " (" + s.categorie + ")" : ""}</span>
-            <button class="btn-delete" data-id="${s.id_skill}" data-type="skill">Supprimer</button>
+            <span><strong>${esc(s.nom_skill)}</strong>${s.niveau ? " — " + esc(s.niveau) : ""}${s.categorie ? " (" + esc(s.categorie) + ")" : ""}</span>
+            <button class="btn-delete" data-id="${esc(s.id_skill)}" data-type="skill">Supprimer</button>
         </div>`;
 }
 

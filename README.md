@@ -114,7 +114,6 @@ Le fichier [AI_REVIEWS.md](AI_REVIEWS.md) documente la phase actuelle du projet 
 
 ## Corrections à venir avant la release
 
-- [ ] Corriger les risques XSS dans le dashboard — échapper les champs injectés dans `innerHTML` 🤖
 - [ ] Ajouter l'édition des formations, expériences et compétences
 - [ ] Tests manquants — email invalide → 422, date de fin avant date de début → 422
 
