@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Builder — Mon CV</title>
+    <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/admin.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Top bar -->
+    <div class="topbar">
+        <h1>CV Builder</h1>
+        <button id="btn-logout" class="btn-logout">Se déconnecter</button>
+    </div>
+
+    <div class="page-content">
+
+        <!-- ---- Profil ---- -->
+        <div class="card">
+            <h2>Informations personnelles</h2>
+            <p id="profile-status" class="section-status"></p>
+            <p id="profile-slug-info" class="info-text"></p>
+
+            <form id="profile-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="f-nom">Nom *</label>
+                        <input type="text" id="f-nom" required maxlength="50" placeholder="Hinton">
+                    </div>
+                    <div class="form-group">
+                        <label for="f-prenom">Prénom *</label>
+                        <input type="text" id="f-prenom" required maxlength="50" placeholder="Thomas">
+                    </div>
+                    <div class="form-group">
+                        <label for="f-email">Email public</label>
+                        <input type="email" id="f-email" placeholder="thomas@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="f-tel">Téléphone (10 chiffres)</label>
+                        <input type="tel" id="f-tel" placeholder="0612345678" maxlength="10">
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="f-adresse">Adresse</label>
+                        <input type="text" id="f-adresse" placeholder="Paris, France">
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="f-is-public">
+                    <label for="f-is-public">Rendre mon CV public (accessible via l'URL /cv/...)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="f-show-email">
+                    <label for="f-show-email">Afficher mon email sur le CV public</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="f-show-phone">
+                    <label for="f-show-phone">Afficher mon téléphone sur le CV public</label>
+                </div>
+
+                <button type="submit" id="btn-save-profile" class="btn-primary" data-label="Enregistrer">Enregistrer</button>
+                <div id="profile-msg" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ---- Formations ---- -->
+        <div class="card">
+            <h2>Formations</h2>
+            <div id="formations-list"></div>
+
+            <hr class="divider">
+            <form id="formation-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fo-nom">Intitulé de la formation *</label>
+                        <input type="text" id="fo-nom" required maxlength="50" placeholder="BTS Informatique">
+                    </div>
+                    <div class="form-group">
+                        <label for="fo-organisme">Établissement *</label>
+                        <input type="text" id="fo-organisme" required maxlength="50" placeholder="Lycée X">
+                    </div>
+                    <div class="form-group">
+                        <label for="fo-date-debut">Date de début *</label>
+                        <input type="date" id="fo-date-debut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fo-date-fin">Date de fin</label>
+                        <input type="date" id="fo-date-fin">
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="fo-description">Description</label>
+                        <textarea id="fo-description" placeholder="Description optionnelle..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" id="btn-add-formation" class="btn-primary" data-label="Ajouter">Ajouter</button>
+                <div id="formation-msg" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ---- Expériences ---- -->
+        <div class="card">
+            <h2>Expériences professionnelles</h2>
+            <div id="experiences-list"></div>
+
+            <hr class="divider">
+            <form id="experience-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ex-nom">Intitulé du poste *</label>
+                        <input type="text" id="ex-nom" required maxlength="50" placeholder="Développeur Web">
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-organisme">Entreprise</label>
+                        <input type="text" id="ex-organisme" maxlength="50" placeholder="Entreprise SAS">
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-date-debut">Date de début *</label>
+                        <input type="date" id="ex-date-debut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-date-fin">Date de fin</label>
+                        <input type="date" id="ex-date-fin">
+                    </div>
+                    <div class="form-group">
+                        <label for="ex-lieu">Lieu</label>
+                        <input type="text" id="ex-lieu" placeholder="Paris, France">
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="ex-description">Description</label>
+                        <textarea id="ex-description" placeholder="Missions, technologies..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" id="btn-add-experience" class="btn-primary" data-label="Ajouter">Ajouter</button>
+                <div id="experience-msg" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ---- Compétences ---- -->
+        <div class="card">
+            <h2>Compétences</h2>
+            <div id="skills-list"></div>
+
+            <hr class="divider">
+            <form id="skill-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="sk-nom">Compétence *</label>
+                        <input type="text" id="sk-nom" required maxlength="100" placeholder="Python">
+                    </div>
+                    <div class="form-group">
+                        <label for="sk-niveau">Niveau</label>
+                        <input type="text" id="sk-niveau" maxlength="100" placeholder="Avancé">
+                    </div>
+                    <div class="form-group">
+                        <label for="sk-categorie">Catégorie</label>
+                        <input type="text" id="sk-categorie" maxlength="100" placeholder="Langages">
+                    </div>
+                </div>
+                <button type="submit" id="btn-add-skill" class="btn-primary" data-label="Ajouter">Ajouter</button>
+                <div id="skill-msg" class="msg"></div>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

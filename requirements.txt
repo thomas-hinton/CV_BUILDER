@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+
+# Auth
+bcrypt
+python-jose[cryptography]
+email-validator
+python-dotenv
+
+# Testing
+pytest
+pytest-asyncio
+httpx
+
+# Linting
+ruff
