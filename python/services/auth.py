@@ -4,18 +4,50 @@ Auth service: password hashing and JWT token management.
 DISCLAIMER: This module was written with assistance from GitHub Copilot
 (Claude Sonnet 4.6) and reviewed by the project author.
 """
+import os
 import uuid
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import bcrypt
+from dotenv import load_dotenv
 from jose import JWTError, jwt
 
 from python.database.connection import get_connection
 
 # ---------------------------------------------------------------------------
-# Configuration — in production these must come from environment variables
+# Configuration (loaded from .env at project root)
 # ---------------------------------------------------------------------------
-SECRET_KEY = "change-me-in-production"  # TODO: move to env variable and use a secure random key
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(_PROJECT_ROOT / ".env")
+
+_app_env = os.getenv("APP_ENV")
+if not _app_env or not _app_env.strip():
+    raise RuntimeError(
+        "Missing APP_ENV in .env. Set APP_ENV to 'development' or 'production'."
+    )
+
+APP_ENV = _app_env.strip().lower()
+if APP_ENV not in ("development", "production"):
+    raise RuntimeError(
+        f"Invalid APP_ENV={_app_env!r}. Expected 'development' or 'production'."
+    )
+
+_DEV_KEY = os.getenv("JWT_SECRET_KEY_DEV")
+_PROD_KEY = os.getenv("JWT_SECRET_KEY_PROD")
+
+if APP_ENV == "production":
+    SECRET_KEY = _PROD_KEY
+    _key_name = "JWT_SECRET_KEY_PROD"
+else:
+    SECRET_KEY = _DEV_KEY
+    _key_name = "JWT_SECRET_KEY_DEV"
+
+if not SECRET_KEY:
+    raise RuntimeError(
+        f"Missing {_key_name} in .env (APP_ENV={APP_ENV}). "
+    )
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

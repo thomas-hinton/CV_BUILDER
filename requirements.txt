@@ -5,6 +5,7 @@ uvicorn[standard]
 bcrypt
 python-jose[cryptography]
 email-validator
+python-dotenv
 
 # Testing
 pytest
